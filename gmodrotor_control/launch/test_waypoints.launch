@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<launch>
+
+
+  <include file="$(find crazyflie_driver)/launch/crazyflie_server.launch"></include>
+
+  <include file="$(find gmodrotor)/launch/gcrazyflie.launch">
+      <arg name="model" value="crazyflie02"/>
+      <arg name="uri" value="radio://0/32/2M" />
+  </include>
+
+  <include file="$(find gmodrotor)/launch/gcrazyflie.launch">
+     <arg name="model" value="crazyflie01"/>
+     <arg name="uri" value="radio://0/35/2M" />
+ </include>
+
+
+
+  <include file="$(find gmodrotor)/launch/gcrazyflie.launch">
+      <arg name="model" value="crazyflie03"/>
+      <arg name="uri" value="radio://0/33/2M" />
+  </include>
+
+
+  <include file="$(find gmodrotor)/launch/gcrazyflie.launch">
+      <arg name="model" value="crazyflie04"/>
+      <arg name="uri" value="radio://0/30/2M/0xE7E7E7E708" />
+  </include>
+
+
+  <!-- <include file="$(find gmodrotor)/launch/gcrazyflie.launch">
+      <arg name="model" value="crazyflie03"/>
+      <arg name="uri" value="radio://0/35/2M/0xE7E7E7E708" />
+  </include> -->
+
+
+
+  <node pkg="gmodrotor" type="pba.py" name="pba"/>
+
+<!--
+  <include file="$(find gmodrotor)/launch/gcrazyflie.launch">
+      <arg name="model" value="crazyflie02"/>
+      <arg name="uri" value="radio://0/37/2M" />
+  </include> -->
+
+<!--
+  <group ns="crazyflie">
+    <include file="$(find crazyflie_driver)/launch/crazyflie_add.launch">
+      <arg name="uri" value="radio://0/38/2M" />
+      <arg name="tf_prefix" value="crazyflie01" />
+      <arg name="enable_logging" value="False" />
+    </include>
+  </group>
+
+<group ns="crazyflie2">
+    <include file="$(find crazyflie_driver)/launch/crazyflie_add.launch">
+      <arg name="uri" value="radio://0/36/2M" />
+      <arg name="tf_prefix" value="crazyflie02" />
+      <arg name="enable_logging" value="False" />
+    </include>
+  </group> -->
+
+  <node pkg="mocap_vicon"
+    type="mocap_vicon_node"
+    name="vicon"
+    output="screen">
+    <param name="server_address" value="192.168.129.243"/>
+    <param name="server_base_port" value="22222"/>
+    <param name="frame_rate" value="100"/>
+    <param name="max_accel" value="10.0"/>
+    <param name="publish_tf" value="true"/>
+    <param name="fixed_frame_id" value="mocap"/>
+    <rosparam param="model_list">[ crazy18, crazy05, crazy02,crazy03]</rosparam>
+
+
+    <remap from="vicon/crazy02/odom" to="/crazyflie02/odom"/>
+    <remap from="vicon/crazy18/odom" to="/crazyflie04/odom"/>
+
+
+    <remap from="vicon/crazy05/odom" to="/crazyflie01/odom"/>
+     <remap from="vicon/crazy03/odom" to="/crazyflie03/odom"/>
+
+  </node>
+
+
+</launch>

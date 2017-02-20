@@ -1,0 +1,20 @@
+<launch>
+
+  <arg name="model"/>
+  <arg name="uri" default="radio://0/100/2M/0xE7E7E7E7E7" />
+  <arg name="cmd_frequency" default="30" />
+
+
+
+  <group ns="$(arg model)">
+    <include file="$(find crazyflie_driver)/launch/crazyflie_add.launch">
+      <arg name="uri" value="$(arg uri)" />
+      <arg name="tf_prefix" value="$(arg model)" />
+      <arg name="enable_logging" value="False" />
+    </include>
+
+    <node pkg="gmodrotor" type="omni_force.py" name="controller"/>
+    <node pkg="gmodrotor" type="test_waypoint.py" name="waypoint"/>
+    <node pkg="gmodrotor" type="omni_vel.py" name="velcontroller"/>  
+  </group>
+</launch>
