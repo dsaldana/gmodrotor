@@ -3,7 +3,7 @@
 
 
 import rospy
-import math 
+import math
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Twist
 
@@ -24,7 +24,7 @@ def callback(twist):
     c3 = 13.0652
     thrust = ((twist.linear.z / 60000. - c1) / c2)**2 - c3  # Force in grams
     thrust = 9.81 * thrust / 1000.  # Force in Newtons
-    
+
     roll = math.radians(twist.linear.y)
     pitch = -math.radians(twist.linear.x)
     yaw = 6 * math.radians(twist.angular.z)
@@ -43,12 +43,3 @@ def listener():
 
 if __name__ == '__main__':
     listener()
-
-
-
-
-
-
-
-
-
