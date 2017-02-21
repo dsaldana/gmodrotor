@@ -17,10 +17,8 @@ b = math.sqrt(2) / 2
 c = 1. / r
 
 # Matrix
-A = [[b, -b, -b, b], [b,b, -b, -b], [-c, c, -c, c]]
+A = [[b, -b, -b, b], [b, b, -b, -b], [-c, c, -c, c]]
 A = np.array(A)
-
-
 
 cons = ({'type': 'ineq', 'fun': lambda V1: V1[0]},
        {'type': 'ineq', 'fun': lambda V1: V1[1]},
@@ -28,13 +26,7 @@ cons = ({'type': 'ineq', 'fun': lambda V1: V1[0]},
        {'type': 'ineq', 'fun': lambda V1: V1[3]})
 
 
-# ax,
-# there are some configurations, where
-# def callbacallbackImu(imu_msg):
-
-
-
-def compute_motor_vels(dx, dy, dth):
+def compute_motor_forces(dx, dy, dth):
     X = [dx, dy, dth]
     # Function to minimize
     def f(V):
@@ -55,37 +47,35 @@ def compute_motor_vels(dx, dy, dth):
 pub1 = None
 
 def callbacallback(twist_msg):
-    dx = twist_msg.linear.x
-    dy = twist_msg.linear.y
+    # desired forces (in grams)
+    ax = twist_msg.linear.x
+    ay = twist_msg.linear.y
     dth = twist_msg.angular.z
 
 
-    # Spatial velocites to motor velocities
-    V = compute_motor_vels(dx, dy, dth)
+    # Spatial velocites to motor forces
+    F = compute_motor_forces(ax, ay, dth)
+    F = np.array(F)
 
-    # Velocities to forces
-    F = V
-
+    ### Convert force to grams
     # PWM thrust
     c1, c2, c3  = -0.670900, 0.193200, 13.065200
-    pwm_max, pwm_min = 60000., 15000
+    pwm_max, pwm_min = 60000., 10000
 
-    def f2pwm(forc):
-        pwm = (c1 + c2 * math.sqrt(c3 + forc)) * pwm_max
-        if pwm>pwm_max:
-            pwm = pwm_max
-        if pwm < pwm_min:
-            pwm = pwm_min
-        return pwm
+    # Forces to PWM
+    PWM = (c1 + c2 * np.sqrt(c3 + F)) * pwm_max
+    PWM[PWM > pwm_max] = pwm_max  # MAX
+    PWM[PWM < pwm_min] = pwm_min  # MIN
 
 
-
-    # Twict package
+    rospy.logwarn(F)
+    rospy.logwarn(PWM)
+    # Twist package sends PWMs
     twist = Twist()
-    twist.linear.x  = f2pwm(F[3])  # Motor 4
-    twist.linear.y  = f2pwm(F[0])   # Motor 3
-    twist.linear.z  =  f2pwm(F[1])  # Motor 2
-    twist.angular.z  =  f2pwm(F[2])  # Motor 1
+    twist.linear.x  = PWM[3]  # Motor 4
+    twist.linear.y  = PWM[0]  # Motor 3
+    twist.linear.z  = PWM[1]  # Motor 2
+    twist.angular.z = PWM[2]  # Motor 1
 
 
     # publish twist
