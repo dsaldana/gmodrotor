@@ -26,3 +26,6 @@ Run the simulator
 $ roscd gmodrotor_sim/morse
 $ morse run gmodrotor_ros.py
 ~~~~
+
+
+Test

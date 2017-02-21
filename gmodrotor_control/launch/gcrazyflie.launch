@@ -24,6 +24,7 @@
 
 
     <!-- Simulation -->
+    <node pkg="gmodrotor_sim" type="odometry_forwarder.py" name="odometry_forwarder" if="$(arg sim)"/>
     <node pkg="gmodrotor_sim" type="motorforce.py" name="motors" if="$(arg sim)"/>
 
 

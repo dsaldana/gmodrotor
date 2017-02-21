@@ -5,10 +5,11 @@
   <include file="$(find crazyflie_driver)/launch/crazyflie_server.launch"></include>
 
   <include file="$(find gmodrotor_control)/launch/gcrazyflie.launch">
-      <arg name="model" value="crazyflie02"/>
+      <arg name="model" value="crazyflie01"/>
       <arg name="uri" value="radio://0/32/2M" />
       <arg name="sim" value="$(arg sim)"/>
   </include>
+
 <!--
   <include file="$(find gmodrotor)/launch/gcrazyflie.launch">
      <arg name="model" value="crazyflie01"/>
@@ -32,8 +33,6 @@
 
 
   <!-- <node pkg="gmodrotor" type="pba.py" name="pba"/> -->
-  <node pkg="gmodrotor_sim"
-    type="odometry_forwarder.py" name="odometry_forwarder" if="$(arg sim)"/>
 
   <node pkg="mocap_vicon"
     type="mocap_vicon_node"

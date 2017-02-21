@@ -14,16 +14,19 @@ for i in range(1, N+1):
     force = ForceTorque()
     force.frequency(60.)
     modrotor.append(force)
-    #force.add_interface('ros', topic=subgroup+'/cmd_vel')
     force.add_interface('ros', topic=subgroup + '/morseforce')
 
-    # Pose
+    # Pose sensor
     pose = Pose()
     pose.frequency(60.)
     modrotor.append(pose)
-    #pose.add_interface('ros', topic=subgroup+'/pose')
-    pose.add_interface('ros')
+    pose.add_interface('ros', topic=subgroup+'/pose')
 
+    # Velocity sensor
+    velocity = Velocity()
+    velocity.frequency(60.)
+    modrotor.append(velocity)
+    velocity.add_interface('ros', topic=subgroup+'/vel')
 
 
 
