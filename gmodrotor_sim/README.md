@@ -19,7 +19,7 @@ multi_mav_manager/config/crazyflie/multi_mav_manager.yaml
 
 Run in different terminals
 ~~~~
-$ roscore
+$ roslaunch gmodrotor_control test_waypoints.launch
 ~~~~
 Run the simulator
 ~~~~

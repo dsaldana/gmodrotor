@@ -5,7 +5,7 @@ from params import N, width, init_sepraration
 
 for i in range(1, N+1):
     modrotor = Robot('brick.blend')
-    modrotor.name = '/crazy' + str(i).zfill(2)
+    modrotor.name = '/crazyflie' + str(i).zfill(2)
     modrotor.translate(y=init_sepraration * i, z=.10)
 
     subgroup = modrotor.name
