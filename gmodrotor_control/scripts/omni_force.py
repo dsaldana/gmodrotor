@@ -100,9 +100,10 @@ def listener():
     rospy.init_node('omnicontroller', anonymous=True)
 
     # Topics toward the robots
-    pub1 = rospy.Publisher('cmd_vel', Twist, queue_size=0)
-    rospy.Subscriber('omni_force', Twist, callbacallback)
-
+    # pub1 = rospy.Publisher('cmd_vel', Twist, queue_size=0)
+    # rospy.Subscriber('omni_force', Twist, callbacallback)
+    pub1 = rospy.Publisher('/crazy01/cmd_vel', Twist, queue_size=0)
+    rospy.Subscriber('/crazy01/omni_force', Twist, callbacallback)
 
 
     rospy.spin()
