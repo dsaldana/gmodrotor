@@ -10,32 +10,59 @@ import scipy.optimize as optimize
 ################ Motor vels #####################
 import numpy as np
 
-# radious
-r = .10
+# radious (Cm)
+r = 4.
 # constants
 b = math.sqrt(2) / 2
 c = 1. / r
 
-# Matrix
-A = [[b, -b, -b, b], [b, b, -b, -b], [-c, c, -c, c]]
-A = np.array(A)
+# Matrices
+As_i = []
 
-cons = ({'type': 'ineq', 'fun': lambda V1: V1[0]},
-       {'type': 'ineq', 'fun': lambda V1: V1[1]},
-       {'type': 'ineq', 'fun': lambda V1: V1[2]},
-       {'type': 'ineq', 'fun': lambda V1: V1[3]})
+# fx>0, fy>0
+A = np.array([[b, -b , b], [b, b, -b], [-c, c, c]])
+Ai = np.linalg.inv(A)
+As_i.append(Ai)
+# fx<0, fy>0
+A = np.array([[b, -b , -b], [b, b, -b], [-c, c, -c]])
+Ai = np.linalg.inv(A)
+As_i.append(Ai)
+# fx<0, fy<0
+A = np.array([[-b, -b , b], [b, -b, -b], [c, -c, c]])
+Ai = np.linalg.inv(A)
+As_i.append(Ai)
+
+# fx>0, fy<0
+A = np.array([[b, -b , b], [b, -b, -b], [-c, -c, c]])
+Ai = np.linalg.inv(A)
+As_i.append(Ai)
 
 
-def compute_motor_forces(dx, dy, dth):
-    X = [dx, dy, dth]
-    # Function to minimize
-    def f(V):
-        y = np.dot(A, V) - X
-        return np.dot( y.T, y)
-    res = optimize.minimize(f, [0, 0, 0, 0], constraints=cons,
-                        options={'disp': False})
+
+def compute_motor_forces(fx, fy, mz):
     # Motor velocities
-    return res['x']
+    f1, f2, f3, f4 = 0,0,0,0
+    rospy.logwarn(fy)
+    # Linear forces
+    if fx==0 and fy==0:
+        pass
+    elif fx>=0 and fy>=0:
+        [f1, f2, f4] = np.dot(As_i[0], [fx, fy, 0])
+    elif fx<0 and fy>=0:  # fx<0, fy>0
+        [f1, f2, f3] = np.dot(As_i[1], [fx, fy, 0])
+    elif fx<0 and fy<0:     # fx<0, fy<0
+        [f2, f3, f4] = np.dot(As_i[2], [fx, fy, 0])
+    elif fx>=0 and fy<0:
+        [f1, f3, f4] = np.dot(As_i[3], [fx, fy, 0])
+
+
+    # Moments
+    if mz > 0:
+        [f1, f2, f4] = [f1, f2, f4] + np.dot(As_i[0], [0, 0, mz])
+    else:
+        [f1, f2, f3] = [f1, f2, f3] + np.dot(As_i[1], [0, 0, mz])
+
+    return np.array([f1, f2, f3, f4])
 
 
 ################ End Motor vels #####################
@@ -55,7 +82,9 @@ def callbacallback(twist_msg):
 
     # Spatial velocites to motor forces
     F = compute_motor_forces(ax, ay, dth)
-    F = np.array(F)
+
+    # Friction
+
 
     ### Convert force to grams
     # PWM thrust

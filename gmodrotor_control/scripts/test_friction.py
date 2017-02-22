@@ -31,7 +31,7 @@ def listener():
     freq = 1. # .5hz
     rate = rospy.Rate(freq)
 
-    force = 10 # in grams
+    force = 20 # in grams
 
     while not rospy.is_shutdown():
         if odom1 is None:
@@ -44,8 +44,8 @@ def listener():
 
 
         force +=1
-        # twist.linear.x  = force
-        twist.angular.z  = force
+        twist.linear.x  = force
+        # twist.angular.z  = force
 
         print force, odom1.twist.twist.linear.x
 
@@ -54,17 +54,6 @@ def listener():
             print "Friction force = ", force-1
             break
 
-
-        # twist.linear.y  = 50
-        # itera = i / freq % 10
-        # if itera < 2.5:
-        #     twist.linear.x  = pwm
-        # elif itera < 5:
-        #     twist.linear.y  = pwm
-        # elif itera < 7.5:
-        #     twist.linear.z  = pwm
-        # elif itera < 10:
-        #     twist.angular.z  = pwm
 
         pub1.publish(twist)
         rate.sleep()
