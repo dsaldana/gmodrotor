@@ -50,8 +50,8 @@ def listener():
 
 
     # Topics toward the robots
-    pub1 = rospy.Publisher('/crazyflie01/omni_vel', Twist, queue_size=0)
-    rospy.Subscriber('/crazyflie01/odom', Odometry, callbacallback_odom1)
+    pub1 = rospy.Publisher('omni_vel', Twist, queue_size=0)
+    rospy.Subscriber('odom', Odometry, callbacallback_odom1)
     # pub1 = rospy.Publisher('omni_vel', Twist, queue_size=0)
     # rospy.Subscriber('odom', Odometry, callbacallback_odom1)
 

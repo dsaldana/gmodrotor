@@ -5,10 +5,12 @@ from params import N, width, init_sepraration
 
 for i in range(1, N+1):
     modrotor = Robot('brick.blend')
-    modrotor.name = '/crazyflie' + str(i).zfill(2)
+
+    robotid =  '/crazyflie' + str(i).zfill(2)
+    modrotor.name = robotid
     modrotor.translate(y=init_sepraration * i, z=.10)
 
-    subgroup = modrotor.name
+    subgroup = robotid
 
     # Attitude controller
     force = ForceTorque()

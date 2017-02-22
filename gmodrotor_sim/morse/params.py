@@ -1,9 +1,9 @@
 
 
 # Number of robots
-N = 1
+N = 2
 width = .116
 
 
 # Initial separation among the robots
-init_sepraration = width * 1
+init_sepraration = width * 2
