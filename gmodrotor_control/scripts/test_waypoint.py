@@ -40,25 +40,20 @@ def trunk(val, min, max):
         val = min
     return val
 
-waypoint_x, waypoint_y = None, None
 
-def callbacallback_waypoint(twist_msg):
-    global waypoint_x, waypoint_y
-    waypoint_x = twist_msg.linear.x
-    waypoint_y = twist_msg.linear.y
 
 
 def listener():
     global pub1, pub2, pub3
-    rospy.init_node('waypoints', anonymous=True)
-    rospy.Subscriber('waypoint', Twist, callbacallback_waypoint)
+    rospy.init_node('testwaypoint', anonymous=True)
+
 
 
     # Topics toward the robots
-    # pub1 = rospy.Publisher('/crazyflie02/omni_vel', Twist, queue_size=0)
-    # rospy.Subscriber('/crazyflie02/odom', Odometry, callbacallback_odom1)
-    pub1 = rospy.Publisher('omni_vel', Twist, queue_size=0)
-    rospy.Subscriber('odom', Odometry, callbacallback_odom1)
+    pub1 = rospy.Publisher('/crazyflie01/omni_vel', Twist, queue_size=0)
+    rospy.Subscriber('/crazyflie01/odom', Odometry, callbacallback_odom1)
+    # pub1 = rospy.Publisher('omni_vel', Twist, queue_size=0)
+    # rospy.Subscriber('odom', Odometry, callbacallback_odom1)
 
     kpi_x,kpi_y = 0, 0
 
@@ -75,10 +70,6 @@ def listener():
             rate.sleep()
             continue
 
-        if waypoint_x is None:
-            rospy.logwarn("No waypoint")
-            rate.sleep()
-            continue
 
 
         # # Robot pose    # angles from robot 2
@@ -90,19 +81,14 @@ def listener():
         rdy = odom1.twist.twist.linear.y
         rdth = odom1.twist.twist.angular.z
         #
-        #
-        # des_x = -1.0689
-        # des_y =  -0.399505
 
-        des_x = waypoint_x
-        des_y = waypoint_y
-        #
-        #
+        des_x, des_y = 1,1
+
+
         # Control
         twist = Twist()
 
         kp = 10
-        # kp = 0
         ex = (des_x - rx)
         ey = (des_y - ry)
 
@@ -113,9 +99,7 @@ def listener():
             ux, uy = 0., 0.
 
 
-        #vel = 0.02 #not board
-        vel = 0.01 #not board
-        # vel = 0.000001
+        vel = 0.1  #not board
         twist.linear.x = trunk(ux, -vel, vel)
         twist.linear.y = trunk(uy, -vel, vel)
 
@@ -127,10 +111,8 @@ def listener():
         # eth = _ang_diff(theta_des, rth)
         vth = k_th * eth
 
-        # ang = .5  # not board
-        ang = .4
+        ang = .2
         twist.angular.z = trunk(vth, -ang, ang)
-        # twist.angular.z = -5
 
 
         pub1.publish(twist)
