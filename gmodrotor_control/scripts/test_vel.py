@@ -29,7 +29,8 @@ def listener():
 
         twist = Twist()
 
-        twist.linear.y  = 30
+        # twist.linear.x  = .1
+        twist.angular.z = .3
         # twist.linear.y  = 50
         # itera = i / freq % 10
         # if itera < 2.5:

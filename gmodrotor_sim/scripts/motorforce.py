@@ -24,7 +24,7 @@ A = np.array(A)
 
 # PWM thrust
 c1, c2, c3  = -0.670900, 0.193200, 13.065200
-pwm_max, pwm_min = 60000., 15000
+pwm_max, pwm_min = 60000., 10000
 
 
 pub1 = None
@@ -39,11 +39,12 @@ def callbacallback(twist_msg):
 
     # Motor saturation
     M[M>pwm_max] = pwm_max
+    # M[M<=pwm_min] = 0  # Real robot does not generage forces with less than this
 
     # pwm to forces (in grams)
     MF = np.power((M / pwm_max - c1) / c2, 2) - c3
     # forces in kilograms
-    MF/=1000
+    MF /= 1000
     MF[MF<0] = 0.
 
     # compute forces

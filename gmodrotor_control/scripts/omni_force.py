@@ -41,8 +41,8 @@ As_i.append(Ai)
 
 def compute_motor_forces(fx, fy, mz):
     # Motor velocities
-    f1, f2, f3, f4 = 0,0,0,0
-    rospy.logwarn(fy)
+    f1, f2, f3, f4 = 0, 0, 0, 0
+
     # Linear forces
     if fx==0 and fy==0:
         pass
@@ -94,11 +94,11 @@ def callbacallback(twist_msg):
     # Forces to PWM
     PWM = (c1 + c2 * np.sqrt(c3 + F)) * pwm_max
     PWM[PWM > pwm_max] = pwm_max  # MAX
-    PWM[PWM < pwm_min] = pwm_min  # MIN
+    # PWM[PWM < pwm_min] = pwm_min  # MIN
+
+    rospy.logwarn(["PWM", PWM])
 
 
-    rospy.logwarn(F)
-    rospy.logwarn(PWM)
     # Twist package sends PWMs
     twist = Twist()
     twist.linear.x  = PWM[3]  # Motor 4
