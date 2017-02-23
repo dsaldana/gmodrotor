@@ -93,10 +93,15 @@ def listener():
         wp3 = [-1.70072496, -0.8       ]
         wp4 = [-2.05144993, -0.8      ]
         wp2 = [-1.35      , -1.15072496]
-        # send_waypoint(pub1, wp1)
-        # send_waypoint(pub2, wp2)
-        # send_waypoint(pub3, wp3)
-        # send_waypoint(pub4, wp4)
+
+        wp1 = [1     ,1]
+        wp2 = [1     , -1]
+        wp3 = [-1, -1]
+        wp3 = [-1, 1]
+        send_waypoint(pub1, wp1)
+        send_waypoint(pub2, wp2)
+        send_waypoint(pub3, wp3)
+        send_waypoint(pub4, wp4)
 
 
 
@@ -113,35 +118,35 @@ def listener():
         #     continue
 
 
-        rx1 = odom1.pose.pose.position.x
-        ry1 = odom1.pose.pose.position.y
-        rx2 = odom2.pose.pose.position.x
-        ry2 = odom2.pose.pose.position.y
-        rx3 = odom3.pose.pose.position.x
-        ry3 = odom3.pose.pose.position.y
-        rx4 = odom4.pose.pose.position.x
-        ry4 = odom4.pose.pose.position.y
-
-
-
-
+        # rx1 = odom1.pose.pose.position.x
+        # ry1 = odom1.pose.pose.position.y
+        # rx2 = odom2.pose.pose.position.x
+        # ry2 = odom2.pose.pose.position.y
+        # rx3 = odom3.pose.pose.position.x
+        # ry3 = odom3.pose.pose.position.y
+        # rx4 = odom4.pose.pose.position.x
+        # ry4 = odom4.pose.pose.position.y
+        #
+        #
+        #
+        #
+        # # send_waypoint(pub1, wp1)
+        # # send_waypoint(pub3, wp3)
+        # w = 0.11
+        # #
+        # # wp2 = [rx1 , ry1 - w]
+        # # send_waypoint(pub2, wp2)
+        # #
+        # # wp4 = [rx3 - w, ry3]
+        # # send_waypoint(pub4, wp4)
+        #
+        #
+        #
+        # wp1 = [rx3 + w , ry3]
         # send_waypoint(pub1, wp1)
-        # send_waypoint(pub3, wp3)
-        w = 0.11
         #
-        # wp2 = [rx1 , ry1 - w]
+        # wp2 = [rx3 + w,  ry3 -w]
         # send_waypoint(pub2, wp2)
-        #
-        # wp4 = [rx3 - w, ry3]
-        # send_waypoint(pub4, wp4)
-
-
-
-        wp1 = [rx3 + w , ry3]
-        send_waypoint(pub1, wp1)
-
-        wp2 = [rx3 + w,  ry3 -w]
-        send_waypoint(pub2, wp2)
 
 
 

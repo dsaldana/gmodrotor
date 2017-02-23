@@ -4,8 +4,7 @@ sys.path.append('.' )
 from params import N, width, init_sepraration
 
 for i in range(1, N+1):
-    modrotor = Robot('brick.blend')
-
+    modrotor = Robot('brick.blend')    
     robotid =  '/crazyflie' + str(i).zfill(2)
     modrotor.name = robotid
     modrotor.translate(y=init_sepraration * i, z=.10)
@@ -17,6 +16,7 @@ for i in range(1, N+1):
     force.frequency(60.)
     modrotor.append(force)
     force.add_interface('ros', topic=subgroup + '/morseforce')
+    # force.add_interface('ros',  topic='morseforce')
 
     # Pose sensor
     pose = Pose()

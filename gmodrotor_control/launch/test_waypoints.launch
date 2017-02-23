@@ -9,11 +9,23 @@
       <arg name="uri" value="radio://0/32/2M" />
       <arg name="sim" value="$(arg sim)"/>
   </include>
-  <include file="$(find gmodrotor_control)/launch/gcrazyflie.launch">
-      <arg name="model" value="crazyflie02"/>
+  <!-- <include file="$(find gmodrotor_control)/launch/gcrazyflie.launch">
+      <arg name="model" value="crazyflie03"/>
+      <arg name="uri" value="radio://0/33/2M" />
+      <arg name="sim" value="$(arg sim)"/>
+  </include> -->
+
+  <!-- <include file="$(find gmodrotor_control)/launch/gcrazyflie.launch">
+      <arg name="model" value="crazyflie03"/>
       <arg name="uri" value="radio://0/33/2M" />
       <arg name="sim" value="$(arg sim)"/>
   </include>
+
+  <include file="$(find gmodrotor_control)/launch/gcrazyflie.launch">
+      <arg name="model" value="crazyflie04"/>
+      <arg name="uri" value="radio://0/33/2M" />
+      <arg name="sim" value="$(arg sim)"/>
+  </include> -->
 
 <!--
   <include file="$(find gmodrotor)/launch/gcrazyflie.launch">

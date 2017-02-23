@@ -20,7 +20,7 @@
     <node pkg="gmodrotor_control" type="omni_force.py" name="controller"/>
     <node pkg="gmodrotor_control" type="omni_vel.py" name="velcontroller"/>
 
-    <node pkg="gmodrotor_control" type="test_waypoint.py" name="waypoint"/>
+    <node pkg="gmodrotor_control" type="gowaypoint.py" name="waypoint"/>
 
 
     <!-- Simulation -->
