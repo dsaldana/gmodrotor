@@ -5,8 +5,12 @@ import rospy
 import math
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
+import numpy as np
 
+w = 0.116
 
+# w = 0.20
+# w= 0.04
 
 
 odom1, odom2, odom3, odom4 =  None, None, None, None
@@ -61,6 +65,37 @@ def send_waypoint(pub1, wp1):
     pub1.publish(twist)
 
 
+
+
+def get_poses(odoms):
+    poses = []
+    for odom in odoms:
+        # if odom is None:
+        #     return [None] * len(odom)
+        rx1 = odom.pose.pose.position.x
+        ry1 = odom.pose.pose.position.y
+        roll1, pitch1, rth = _euler_from_quaterion(odom.pose.pose.orientation)
+
+        poses.append([rx1, ry1, rth])
+    return poses
+
+def check_waypoints(odoms, wps, min_dist=.035,  min_ang=.08):
+    poses = get_poses(odoms)
+
+    targets_achieved = True
+    for (x1, y1, th1), (wx, wy) in zip(poses, wps):
+        distance = math.hypot(wy - y1, wx - x1)
+        ang_diff = abs(th1 - 0.0)
+        target_achieved = distance < min_dist and ang_diff < min_ang
+
+        targets_achieved = targets_achieved and target_achieved
+        print distance,
+
+    print ""
+
+    return targets_achieved
+
+
 def listener():
     global pub1, pub2, pub3
     rospy.init_node('pba', anonymous=True)
@@ -82,140 +117,99 @@ def listener():
 
     freq = 10  # 10hz
     rate = rospy.Rate(freq)
+
+
+    # Centroid of the structure
+    zc = np.array([.26, 0])
+
+
+    stage = 1
+
     while not rospy.is_shutdown():
+        # print "stage number", stage
+
+        if odom1 is None or odom2 is None or odom3 is None or odom4 is None:
+            continue
+
+        w2 = 2*w * math.sqrt(2)
+        odoms = [odom1, odom2, odom3, odom4]
+
+        # robots
+        r1 = np.array([odom1.pose.pose.position.x, odom1.pose.pose.position.y])
+        r2 = np.array([odom2.pose.pose.position.x, odom2.pose.pose.position.y])
+        r3 = np.array([odom3.pose.pose.position.x, odom3.pose.pose.position.y])
+        r4 = np.array([odom4.pose.pose.position.x, odom4.pose.pose.position.y])
+
+        # print math.hypot((r3-r2)[0], (r3-r2)[1])
+
+        if stage == 1:  # Stage 1: initial locations
+
+            wp1 = zc
+            wp2 = zc + [w2, w2]
+            wp3 = zc + [w2, 0]
+            wp4 = zc + [-w2,0]
+            send_waypoint(pub1, wp1)
+            send_waypoint(pub2, wp2)
+            send_waypoint(pub3, wp3)
+            send_waypoint(pub4, wp4)
+
+
+            # Check destinations
+            achieved = check_waypoints(odoms, [wp1, wp2, wp3, wp4])
+
+            print "stage: ", stage, achieved
+            if achieved:
+                stage += 1
 
 
 
-
-        # Stage 1: initial locations
-
-        wp1 = [-1.35      , -0.8 ]
-        wp3 = [-1.70072496, -0.8       ]
-        wp4 = [-2.05144993, -0.8      ]
-        wp2 = [-1.35      , -1.15072496]
-
-        wp1 = [1     ,1]
-        wp2 = [1     , -1]
-        wp3 = [-1, -1]
-        wp3 = [-1, 1]
-        send_waypoint(pub1, wp1)
-        send_waypoint(pub2, wp2)
-        send_waypoint(pub3, wp3)
-        send_waypoint(pub4, wp4)
+        elif stage == 2:  # Stage 2a: fist attachment
+            # Keep locations
+            wp1 = zc
+            wp3 = zc + [w2, 0]
 
 
+            # Move towards 3
+            wp2 = r3 + [0, w-0.01]
+            # Move towards 1
+            wp4 = r1 + [-w, 0]
 
-        # Dependable waypoints
+            send_waypoint(pub1, wp1)
+            send_waypoint(pub2, wp2)
+            send_waypoint(pub3, wp3)
+            send_waypoint(pub4, wp4)
 
+            # Check destinations
+            achieved = check_waypoints(odoms, [wp1, wp2, wp3, wp4])
 
-
-
-        # Stage 2a: fist attachment
-        # Robot locations
-        # if odom1 is None or odom2:
-        #     rospy.logwarn("No Odometry bla")
-        #     rate.sleep()
-        #     continue
-
-
-        # rx1 = odom1.pose.pose.position.x
-        # ry1 = odom1.pose.pose.position.y
-        # rx2 = odom2.pose.pose.position.x
-        # ry2 = odom2.pose.pose.position.y
-        # rx3 = odom3.pose.pose.position.x
-        # ry3 = odom3.pose.pose.position.y
-        # rx4 = odom4.pose.pose.position.x
-        # ry4 = odom4.pose.pose.position.y
-        #
-        #
-        #
-        #
-        # # send_waypoint(pub1, wp1)
-        # # send_waypoint(pub3, wp3)
-        # w = 0.11
-        # #
-        # # wp2 = [rx1 , ry1 - w]
-        # # send_waypoint(pub2, wp2)
-        # #
-        # # wp4 = [rx3 - w, ry3]
-        # # send_waypoint(pub4, wp4)
-        #
-        #
-        #
-        # wp1 = [rx3 + w , ry3]
-        # send_waypoint(pub1, wp1)
-        #
-        # wp2 = [rx3 + w,  ry3 -w]
-        # send_waypoint(pub2, wp2)
+            print "stage: ", stage, achieved
+            if achieved:
+                stage += 1
 
 
+        elif stage == 3:  # Stage 2b: fist attachment
+            # Keep locations
+            wp1 = zc
+            wp4 = zc + [-w, 0]
 
 
+            # Move towards 1
+            wp3 = r1 + [w, 0]
+            # Move towards nothing
+            wp2 = r1 + [w, w + 0.003]
 
 
+            # print math.hypot((r4-r1)[0], (r4-r1)[1])
+            send_waypoint(pub1, wp1)
+            send_waypoint(pub2, wp2)
+            send_waypoint(pub3, wp3)
+            send_waypoint(pub4, wp4)
+
+            achieved = check_waypoints(odoms, [wp1, wp2, wp3, wp4])
 
 
-
-        # send_waypoint(pub1, wp1)
-        # wp2 = wp1
-        # wp2[1] -= w
-        #
-        # send_waypoint(pub2, wp2)
-
-
-        # Stage 2b final attachment
-
-
-        #
-        #
-        #
-        # # # Robot pose    # angles from robot 2
-        # roll1, pitch1, rth = _euler_from_quaterion(odom1.pose.pose.orientation)
-        # rx = odom1.pose.pose.position.x
-        # ry = odom1.pose.pose.position.y
-        # # Robot velocities
-        # rdx = odom1.twist.twist.linear.x
-        # rdy = odom1.twist.twist.linear.y
-        # rdth = odom1.twist.twist.angular.z
-        # #
-        # #
-        # # des_x = -1.0689
-        # # des_y =  -0.399505
-        #
-        # des_x = waypoint_x
-        # des_y = waypoint_y
-        # #
-        # #
-        # # Control
-        # twist = Twist()
-        #
-        # kp = 10
-        # ex = (des_x - rx)
-        # ey = (des_y - ry)
-        #
-        # ux = kp * ex
-        # uy = kp * ey
-        #
-        # if math.sqrt(ex**2 + ey**2) < .005:
-        #     ux, uy = 0., 0.
-        #
-        #
-        # #vel = 0.02 #not board
-        # vel = 0.01 #not board
-        # # vel = 0.000001
-        # twist.linear.x = trunk(ux, -vel, vel)
-        # twist.linear.y = trunk(uy, -vel, vel)
-        #
-        #
-        # #
-        # theta_des = 0
-        # k_th = 200
-        # vth = k_th * (theta_des - rth)
-        #
-        # # ang = .5  # not board
-        # ang = .4
-        # twist.angular.z = trunk(vth, -ang, ang)
-        # # twist.angular.z = -5
+            if achieved:
+                stage += 1
 
 
 

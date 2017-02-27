@@ -8,10 +8,13 @@ from geometry_msgs.msg import Twist
 
 ##################### Params ##################
 m = 65  # Mass in grams
-fric_force = 27  # force friction in grams
+#fric_force = 27  # force friction in grams
+fric_force = 11  # force friction in grams
+fric_force = 14  # Friction real robots
 # fric_force = 0
 fric_moment = 0.0025  # moment [cm*grams]
-# fric_moment = 0  # moment [cm*grams]
+# fric_moment = 2.5 # Real robots
+fric_moment = 3.
 r = 40.  # radious
 ################################################3
 
@@ -87,6 +90,7 @@ def callbacallback_vel(twist_msg):
     # PI Control for the angular acceleration
     #kp_th, ki_th = -800, 0.
     kp_th, ki_th = .0000002, 0
+    kp_th, ki_th = .00004, 0  ## REAL robots
     eth = (des_dth - r_dth)
     ath = kp_th * eth #+ ki_th * accum_th
     # accums

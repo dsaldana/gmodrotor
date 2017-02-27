@@ -22,13 +22,13 @@ def listener():
     rospy.init_node('ramping', anonymous=True)
 
     # Odometry
-    rospy.Subscriber('/crazyflie01/odom', Odometry, callbacallback_odom1)
+    rospy.Subscriber('/crazyflie03/odom', Odometry, callbacallback_odom1)
     # Topics toward the robots
-    pub1 = rospy.Publisher('/crazyflie01/omni_force', Twist, queue_size=0)
+    pub1 = rospy.Publisher('/crazyflie03/omni_force', Twist, queue_size=0)
 
     pwm = 10000
 
-    freq = 1. # .5hz
+    freq = 5. # .5hz
     rate = rospy.Rate(freq)
 
     force = 1 # in grams
@@ -43,15 +43,15 @@ def listener():
         twist = Twist()
 
 
-        force +=1
+        force += 1/freq
         # twist.linear.x  = force
-        twist.angular.z  = force * 0.001
+        twist.angular.z  = force * .1#0.01
 
         print force, odom1.twist.twist.linear.x
 
         # velocity
-        if odom1.twist.twist.linear.x > 0.001:
-            print "Friction force = ", force-1
+        if odom1.twist.twist.linear.x > 0.01:
+            print "Friction force = ", force-1/freq
             break
 
 
