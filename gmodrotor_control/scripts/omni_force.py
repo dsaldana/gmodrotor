@@ -89,7 +89,7 @@ def callbacallback(twist_msg):
     ### Convert force to grams
     # PWM thrust
     c1, c2, c3  = -0.670900, 0.193200, 13.065200
-    pwm_max, pwm_min = 60000., 10000
+    pwm_max, pwm_min = 60000., 000
 
     # Forces to PWM
     PWM = (c1 + c2 * np.sqrt(c3 + F)) * pwm_max

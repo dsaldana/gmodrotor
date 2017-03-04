@@ -23,6 +23,7 @@ $ roslaunch gmodrotor_control test_waypoints.launch
 ~~~~
 Run the simulator
 ~~~~
+$ roscore
 $ roscd gmodrotor_sim/morse
 $ morse run gmodrotor_ros.py
 ~~~~

@@ -120,7 +120,8 @@ def listener():
 
 
     # Centroid of the structure
-    zc = np.array([.26, 0])
+    zc = np.array([1.06, -0.39])
+
 
 
     stage = 1
@@ -131,7 +132,7 @@ def listener():
         if odom1 is None or odom2 is None or odom3 is None or odom4 is None:
             continue
 
-        w2 = 2*w * math.sqrt(2)
+        w2 = 2*w #* math.sqrt(2)
         odoms = [odom1, odom2, odom3, odom4]
 
         # robots

@@ -5,13 +5,13 @@
   <include file="$(find crazyflie_driver)/launch/crazyflie_server.launch"></include>
 
    <include file="$(find gmodrotor_control)/launch/gcrazyflie.launch">
-      <arg name="model" value="crazyflie01"/>
+      <arg name="model" value="crazyflie02"/>
       <arg name="uri" value="radio://0/35/2M" />
       <arg name="sim" value="$(arg sim)"/>
   </include>
 
   <include file="$(find gmodrotor_control)/launch/gcrazyflie.launch">
-      <arg name="model" value="crazyflie02"/>
+      <arg name="model" value="crazyflie04"/>
       <arg name="uri" value="radio://0/32/2M" />
       <arg name="sim" value="$(arg sim)"/>
   </include>
@@ -23,8 +23,8 @@
   </include>
 
   <include file="$(find gmodrotor_control)/launch/gcrazyflie.launch">
-      <arg name="model" value="crazyflie04"/>
-      <arg name="uri" value="radio://0/38/2M" />
+      <arg name="model" value="crazyflie01"/>
+      <arg name="uri" value="radio://0/47/2M" />
       <arg name="sim" value="$(arg sim)"/>
   </include>
 
@@ -43,11 +43,11 @@
     <param name="max_accel" value="10.0"/>
     <param name="publish_tf" value="true"/>
     <param name="fixed_frame_id" value="mocap"/>
-    <rosparam param="model_list">[crazy02, crazy03, crazy05, crazy08]</rosparam>
+    <rosparam param="model_list">[crazy02, crazy03, crazy05, crazy07]</rosparam>
 
-    <remap from="vicon/crazy02/odom" to="/crazyflie02/odom"/>
-    <remap from="vicon/crazy08/odom" to="/crazyflie04/odom"/>
-    <remap from="vicon/crazy05/odom" to="/crazyflie01/odom"/>
+    <remap from="vicon/crazy02/odom" to="/crazyflie04/odom"/>
+    <remap from="vicon/crazy05/odom" to="/crazyflie02/odom"/>
+    <remap from="vicon/crazy07/odom" to="/crazyflie01/odom"/>
     <remap from="vicon/crazy03/odom" to="/crazyflie03/odom"/>
   </node>
 

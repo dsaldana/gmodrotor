@@ -1,7 +1,7 @@
 
 
 # Number of robots
-N = 2
+N = 1
 width = .116
 
 

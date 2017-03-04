@@ -14,7 +14,7 @@ fric_force = 14  # Friction real robots
 # fric_force = 0
 fric_moment = 0.0025  # moment [cm*grams]
 # fric_moment = 2.5 # Real robots
-fric_moment = 3.
+fric_moment = 3.1
 r = 40.  # radious
 ################################################3
 
@@ -90,13 +90,18 @@ def callbacallback_vel(twist_msg):
     # PI Control for the angular acceleration
     #kp_th, ki_th = -800, 0.
     kp_th, ki_th = .0000002, 0
-    kp_th, ki_th = .00004, 0  ## REAL robots
+    kp_th, ki_th = .00004, 0.0000000001  ## REAL robots
     eth = (des_dth - r_dth)
-    ath = kp_th * eth #+ ki_th * accum_th
+    ath = kp_th * eth + ki_th * accum_th
     # accums
     accum_x += ex
     accum_y += ey
-    accum_th += eth
+    accum_th += -eth
+
+
+
+    if accum_th > 50.:
+        accum_th = 50
 
     #### conver from global to local
     ax = math.cos(theta) * ax_global + math.sin(theta) * ay_global
