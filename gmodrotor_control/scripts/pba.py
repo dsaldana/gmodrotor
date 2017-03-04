@@ -146,13 +146,23 @@ def listener():
         if stage == 1:  # Stage 1: initial locations
 
             wp1 = zc
-            wp2 = zc + [w2, w2]
+
             wp3 = zc + [w2, 0]
             wp4 = zc + [-w2,0]
-            send_waypoint(pub1, wp1)
-            send_waypoint(pub2, wp2)
-            send_waypoint(pub3, wp3)
-            send_waypoint(pub4, wp4)
+            #wp2 = zc + [w2, w2]  # L shape
+            wp2 = zc + [2*w2, 0]  # I shape
+
+
+
+
+            # Square
+            # wp2 = zc + [0., w2]  # Square
+            # wp3 = zc + [-w2, w2]  # Square
+            #
+            # send_waypoint(pub1, wp1)
+            # send_waypoint(pub2, wp2)
+            # send_waypoint(pub3, wp3)
+            # send_waypoint(pub4, wp4)
 
 
             # Check destinations
@@ -171,9 +181,15 @@ def listener():
 
 
             # Move towards 3
-            wp2 = r3 + [0, w-0.01]
+            #wp2 = r3 + [0, w]  # L shape
+            wp2 = r3 + [w, 0]  # I shape
             # Move towards 1
             wp4 = r1 + [-w, 0]
+
+            # Square
+            # wp2 = r1 + [0, w - 0.02]  # Square shape
+            # wp4 = zc + [-w2,0]  # Square shape
+            # wp3 = r4 + [0, w- 0.02]  # Square shape
 
             send_waypoint(pub1, wp1)
             send_waypoint(pub2, wp2)
@@ -197,10 +213,14 @@ def listener():
             # Move towards 1
             wp3 = r1 + [w, 0]
             # Move towards nothing
-            wp2 = r1 + [w, w + 0.003]
+            #wp2 = r1 + [w, w]  # L shape
+            wp2 = r1 + [2*w, 0]  # I shape
 
+            # Square
+            # wp2 = zc + [0, w]
+            # wp3 = r2 + [-w, 0]  # Square shape
+            # wp4 = r1 + [-w, 0]  # Square shape
 
-            # print math.hypot((r4-r1)[0], (r4-r1)[1])
             send_waypoint(pub1, wp1)
             send_waypoint(pub2, wp2)
             send_waypoint(pub3, wp3)
