@@ -90,7 +90,7 @@ def callbacallback_vel(twist_msg):
     # PI Control for the angular acceleration
     #kp_th, ki_th = -800, 0.
     kp_th, ki_th = .0000002, 0
-    kp_th, ki_th = .00004, 0.0000000001  ## REAL robots
+    kp_th, ki_th = .00004, 0.00000000018  ## REAL robots
     eth = (des_dth - r_dth)
     ath = kp_th * eth + ki_th * accum_th
     # accums
@@ -100,8 +100,10 @@ def callbacallback_vel(twist_msg):
 
 
 
-    if accum_th > 50.:
-        accum_th = 50
+    if accum_th > 120.:
+        accum_th = 120
+    if accum_th < -120.:
+        accum_th = -120
 
     #### conver from global to local
     ax = math.cos(theta) * ax_global + math.sin(theta) * ay_global

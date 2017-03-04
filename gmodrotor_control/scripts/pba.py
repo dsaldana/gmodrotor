@@ -13,7 +13,7 @@ w = 0.116
 # w= 0.04
 
 
-odom1, odom2, odom3, odom4 =  None, None, None, None
+odom1, odom2, odom3, odom4, odom5 =  None, None, None, None, None
 
 
 
@@ -34,6 +34,9 @@ def callbacallback_odom4(odom):
     global odom4
     odom4 = odom
 
+def callbacallback_odom5(odom):
+    global odom5
+    odom5 = odom
 
 def _euler_from_quaterion(quat):
     quaternion = (quat.x, quat.y, quat.z, quat.w)
@@ -106,13 +109,14 @@ def listener():
     rospy.Subscriber('/crazyflie02/odom', Odometry, callbacallback_odom2)
     rospy.Subscriber('/crazyflie03/odom', Odometry, callbacallback_odom3)
     rospy.Subscriber('/crazyflie04/odom', Odometry, callbacallback_odom4)
+    rospy.Subscriber('/crazyflie05/odom', Odometry, callbacallback_odom5)
 
 
     pub1 = rospy.Publisher('/crazyflie01/waypoint', Twist, queue_size=0)
     pub2 = rospy.Publisher('/crazyflie02/waypoint', Twist, queue_size=0)
     pub3 = rospy.Publisher('/crazyflie03/waypoint', Twist, queue_size=0)
     pub4 = rospy.Publisher('/crazyflie04/waypoint', Twist, queue_size=0)
-
+    pub5 = rospy.Publisher('/crazyflie05/waypoint', Twist, queue_size=0)
 
 
     freq = 10  # 10hz
@@ -129,17 +133,18 @@ def listener():
     while not rospy.is_shutdown():
         # print "stage number", stage
 
-        if odom1 is None or odom2 is None or odom3 is None or odom4 is None:
+        if odom1 is None or odom2 is None or odom3 is None or odom4 is None or odom5 is None:
             continue
 
         w2 = 2*w #* math.sqrt(2)
-        odoms = [odom1, odom2, odom3, odom4]
+        odoms = [odom1, odom2, odom3, odom4, odom5]
 
         # robots
         r1 = np.array([odom1.pose.pose.position.x, odom1.pose.pose.position.y])
         r2 = np.array([odom2.pose.pose.position.x, odom2.pose.pose.position.y])
         r3 = np.array([odom3.pose.pose.position.x, odom3.pose.pose.position.y])
         r4 = np.array([odom4.pose.pose.position.x, odom4.pose.pose.position.y])
+        r5 = np.array([odom5.pose.pose.position.x, odom5.pose.pose.position.y])
 
         # print math.hypot((r3-r2)[0], (r3-r2)[1])
 
@@ -156,12 +161,12 @@ def listener():
 
 
             # Square
-            wp2 = zc + [0., w2]  # Square
-            wp3 = zc + [-w2, w2]  # Square
+            # wp2 = zc + [0., w2]  # Square
+            # wp3 = zc + [-w2, w2]  # Square
             #
             # U shape
-            # wp2 = zc + [w2, w2]
-            # wp2 = zc + [w2, w2]
+            wp2 = zc + [w2, w2]
+            wp5 = zc + [-w2, w2]
 
 
 
@@ -169,10 +174,10 @@ def listener():
             send_waypoint(pub2, wp2)
             send_waypoint(pub3, wp3)
             send_waypoint(pub4, wp4)
-
+            send_waypoint(pub5, wp5)
 
             # Check destinations
-            achieved = check_waypoints(odoms, [wp1, wp2, wp3, wp4])
+            achieved = check_waypoints(odoms, [wp1, wp2, wp3, wp4, wp5])
 
             print "stage: ", stage, achieved
             if achieved:
@@ -197,13 +202,21 @@ def listener():
             # wp4 = zc + [-w2,0]  # Square shape
             # wp3 = r4 + [0, w- 0.02]  # Square shape
 
+            # U shape
+            wp2 = r3 + [0, w]
+            wp3 = zc + [w2, 0]
+            wp4 = zc + [-w2,0]
+            wp5 = r4 + [0, w]
+
+
             send_waypoint(pub1, wp1)
             send_waypoint(pub2, wp2)
             send_waypoint(pub3, wp3)
             send_waypoint(pub4, wp4)
+            send_waypoint(pub5, wp5)
 
             # Check destinations
-            achieved = check_waypoints(odoms, [wp1, wp2, wp3, wp4])
+            achieved = check_waypoints(odoms, [wp1, wp2, wp3, wp4, wp5])
 
             print "stage: ", stage, achieved
             if achieved:
@@ -227,18 +240,41 @@ def listener():
             # wp3 = r2 + [-w, 0]  # Square shape
             # wp4 = r1 + [-w, 0]  # Square shape
 
+            # U shape
+            wp2 = r1 + [w, w]
+            wp3 = r1 + [w, 0]
+            wp4 = zc + [-w2,0]
+            wp5 = r4 + [0, w]
+
+
+
             send_waypoint(pub1, wp1)
             send_waypoint(pub2, wp2)
             send_waypoint(pub3, wp3)
             send_waypoint(pub4, wp4)
+            send_waypoint(pub5, wp5)
 
-            achieved = check_waypoints(odoms, [wp1, wp2, wp3, wp4])
+            achieved = check_waypoints(odoms, [wp1, wp2, wp3, wp4, wp5])
 
 
             if achieved:
                 stage += 1
 
+        elif stage == 4:
+            # U shape
+            wp1 = zc
 
+            # U shape
+            wp2 = r1 + [w, w]
+            wp3 = r1 + [w, 0]
+            wp4 = r1 + [-w,0]
+            wp5 = r1 + [-w, w]
+
+            send_waypoint(pub1, wp1)
+            send_waypoint(pub2, wp2)
+            send_waypoint(pub3, wp3)
+            send_waypoint(pub4, wp4)
+            send_waypoint(pub5, wp5)
 
         rate.sleep()
 
