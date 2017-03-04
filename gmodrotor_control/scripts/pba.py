@@ -150,19 +150,25 @@ def listener():
             wp3 = zc + [w2, 0]
             wp4 = zc + [-w2,0]
             #wp2 = zc + [w2, w2]  # L shape
-            wp2 = zc + [2*w2, 0]  # I shape
+            # wp2 = zc + [2*w2, 0]  # I shape
 
 
 
 
             # Square
-            # wp2 = zc + [0., w2]  # Square
-            # wp3 = zc + [-w2, w2]  # Square
+            wp2 = zc + [0., w2]  # Square
+            wp3 = zc + [-w2, w2]  # Square
             #
-            # send_waypoint(pub1, wp1)
-            # send_waypoint(pub2, wp2)
-            # send_waypoint(pub3, wp3)
-            # send_waypoint(pub4, wp4)
+            # U shape
+            # wp2 = zc + [w2, w2]
+            # wp2 = zc + [w2, w2]
+
+
+
+            send_waypoint(pub1, wp1)
+            send_waypoint(pub2, wp2)
+            send_waypoint(pub3, wp3)
+            send_waypoint(pub4, wp4)
 
 
             # Check destinations
